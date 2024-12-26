@@ -1,56 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Jamaah Umroh</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Daftar Jamaah Umroh</h1>
+@extends('layouts.app')
 
-        <!-- Tombol Tambah Data -->
-        <a href="{{ route('umroh-tickets.create') }}" class="btn btn-primary mb-3">Tambah Jamaah</a>
+@section('content')
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Daftar Jamaah Umroh</h1>
+            <a href="{{ route('umroh.add') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Tambah Jamaah
+            </a>
+        </div>
+        <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-        <!-- Tabel Data -->
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Alamat</th>
-                    <th>No. Telepon</th>
-                    <th>Keberangkatan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($umrohTickets as $ticket)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $ticket->nama }}</td>
-                        <td>{{ $ticket->alamat }}</td>
-                        <td>{{ $ticket->telepon }}</td>
-                        <td>{{ $ticket->tanggal_keberangkatan }}</td>
-                        <td>
-                            <a href="{{ route('umroh-tickets.edit', $ticket->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('umroh-tickets.destroy', $ticket->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">Tidak ada data jamaah umroh.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Nama</th>
+                            <th>No. Paspor</th>
+                            <th>Paket</th>
+                            <th>Harga</th>
+                            <th>Keberangkatan</th>
+                            <th width="15%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($umrohTickets as $ticket)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $ticket->name }}</td>
+                                <td>{{ $ticket->passport_number }}</td>
+                                <td>{{ $ticket->package }}</td>
+                                <td>Rp {{ number_format($ticket->price, 0, ',', '.') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($ticket->departure_date)->format('d/m/Y') }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('umroh.edit', $ticket->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form action="{{ route('umroh.destroy', $ticket->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                                        Belum ada data jamaah umroh.
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+@endpush
+@endsection

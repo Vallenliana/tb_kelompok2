@@ -1,44 +1,164 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1 class="mb-4">Edit Tiket Umroh</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h1 class="h3 mb-0 py-2">Edit Data Jamaah Umroh</h1>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+                    <form action="{{ route('umroh.edit', $ticket->id) }}" method="POST" class="needs-validation" novalidate>
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id" value="{{ $ticket->id }}">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" 
+                                           name="name" 
+                                           id="name" 
+                                           class="form-control @error('name') is-invalid @enderror" 
+                                           value="{{ old('name', $ticket->name) }}" 
+                                           placeholder="Masukkan nama"
+                                           minlength="3"
+                                           maxlength="255"
+                                           required>
+                                    <label for="name">Nama Lengkap</label>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
-    <form action="{{ route('umroh-tickets.update', $umrohTicket->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="name">Nama</label>
-            <input type="text" name="name" id="name" class="form-control" value="{{ $umrohTicket->name }}" required>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" 
+                                           name="passport_number" 
+                                           id="passport_number" 
+                                           class="form-control @error('passport_number') is-invalid @enderror" 
+                                           value="{{ old('passport_number', $ticket->passport_number) }}" 
+                                           placeholder="Masukkan nomor paspor"
+                                           required>
+                                    <label for="passport_number">Nomor Paspor</label>
+                                    @error('passport_number')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select name="package" 
+                                            id="package" 
+                                            class="form-select @error('package') is-invalid @enderror" 
+                                            required>
+                                        <option value="">Pilih Paket Umroh</option>
+                                        <option value="ekonomi" {{ old('package', $ticket->package) == 'ekonomi' ? 'selected' : '' }}>Ekonomi</option>
+                                        <option value="standard" {{ old('package', $ticket->package) == 'standard' ? 'selected' : '' }}>Standard</option>
+                                        <option value="premium" {{ old('package', $ticket->package) == 'premium' ? 'selected' : '' }}>Premium</option>
+                                    </select>
+                                    <label for="package">Paket Umroh</label>
+                                    @error('package')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="number" 
+                                           name="price" 
+                                           id="price" 
+                                           class="form-control @error('price') is-invalid @enderror" 
+                                           value="{{ old('price', $ticket->price) }}" 
+                                           placeholder="Masukkan harga"
+                                           min="0"
+                                           required>
+                                    <label for="price">Harga (Rp)</label>
+                                    @error('price')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="date" 
+                                           name="departure_date" 
+                                           id="departure_date" 
+                                           class="form-control @error('departure_date') is-invalid @enderror" 
+                                           value="{{ old('departure_date', $ticket->departure_date) }}" 
+                                           min="{{ date('Y-m-d') }}"
+                                           required>
+                                    <label for="departure_date">Tanggal Keberangkatan</label>
+                                    @error('departure_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ route('umroh.index') }}" class="btn btn-outline-secondary me-2">
+                                <i class="bi bi-x-circle me-1"></i> Batal
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="passport_number">No. Paspor</label>
-            <input type="text" name="passport_number" id="passport_number" class="form-control" value="{{ $umrohTicket->passport_number }}" required>
-        </div>
-        <div class="form-group">
-            <label for="package">Paket</label>
-            <input type="text" name="package" id="package" class="form-control" value="{{ $umrohTicket->package }}" required>
-        </div>
-        <div class="form-group">
-            <label for="price">Harga</label>
-            <input type="number" name="price" id="price" class="form-control" value="{{ $umrohTicket->price }}" required>
-        </div>
-        <div class="form-group">
-            <label for="departure_date">Tanggal Keberangkatan</label>
-            <input type="date" name="departure_date" id="departure_date" class="form-control" value="{{ $umrohTicket->departure_date }}" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Perbarui</button>
-        <a href="{{ route('umroh-tickets.index') }}" class="btn btn-secondary mt-3">Batal</a>
-    </form>
+    </div>
 </div>
+
+@push('scripts')
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+
+    // Format currency input
+    const priceInput = document.getElementById('price');
+    priceInput.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, "");
+        if (value !== "") {
+            value = parseInt(value);
+            this.value = value;
+        }
+    });
+
+    // Set minimum date for departure_date
+    const departureDateInput = document.getElementById('departure_date');
+    const today = new Date().toISOString().split('T')[0];
+    departureDateInput.setAttribute('min', today);
+</script>
+@endpush
 @endsection
