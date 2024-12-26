@@ -30,6 +30,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-Route::get('/index', [UmrohTicketController::class, 'index'])->name('ticket.index')->middleware(['auth']);
+Route::middleware('auth')->group(function () {
+    Route::get('/daftar-jamaah-umroh', [UmrohTicketController::class, 'index'])->name('umroh.index');
+    Route::get('/daftar-jamaah-umroh/buat', [UmrohTicketController::class, 'add'])->name('umroh.add');
+    Route::post('/daftar-jamaah-umroh/buat', [UmrohTicketController::class, 'store'])->name('umroh.store');
+    Route::get('/daftar-jamaah-umroh/{id}/edit', [UmrohTicketController::class, 'edit'])->name('umroh.edit');
+    Route::put('/daftar-jamaah-umroh/{id}/edit', [UmrohTicketController::class, 'edit_put'])->name('umroh.update');
+    Route::delete('/daftar-jamaah-umroh/{id}', [UmrohTicketController::class, 'delete'])->name('umroh.destroy');
+});
