@@ -9,6 +9,18 @@ class UmrohTicket extends Model
 {
     use HasFactory;
 
-    // Kolom yang bisa diisi melalui mass assignment
-    protected $fillable = ['nama', 'alamat', 'telepon', 'tanggal_keberangkatan'];
+    protected $table = "umroh_tickets";
+
+    protected $fillable = [
+        'name',
+        'passport_number',
+        'package',
+        'price',
+        'departure_date'
+    ];
+
+    protected $casts = [
+        'departure_date' => 'date',
+        'price' => 'decimal:2'
+    ];
 }
