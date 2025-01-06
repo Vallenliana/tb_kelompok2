@@ -6,26 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::create('umroh_tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('passport_number');
+            $table->string('name')->nullable();
+            $table->string('passport_number')->nullable();
             $table->string('package');
-            $table->integer('price');
+            $table->text('description')->nullable();
+            $table->decimal('price', 12, 2)->default(0);
+            $table->integer('quota')->default(0);
             $table->date('departure_date');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('umroh_tickets');
     }

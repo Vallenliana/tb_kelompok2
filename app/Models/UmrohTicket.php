@@ -15,7 +15,9 @@ class UmrohTicket extends Model
         'name',
         'passport_number',
         'package',
+        'description',
         'price',
+        'quota',
         'departure_date'
     ];
 
